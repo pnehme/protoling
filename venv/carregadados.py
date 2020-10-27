@@ -2,6 +2,24 @@ from pg_db import acc_db as acc
 import pandas as pd
 import matplotlib.pyplot as plt
 import csv
+def calcMedia(lista):
+    media = 0.0
+    qtd = 0.0
+    for i in lista:
+        media += i
+        qtd += 1
+    return (media/qtd)
+
+def calcDesvio(lista):
+    media = calcMedia(lista)
+    qtd = 0.0
+    variancia = 0.0
+    desvio = 0.0
+    for i in lista:
+        variancia += (i-media)**2
+        qtd += 1
+    return (variancia/qtd)**0.5
+
 connection = acc.exec_con()
 result = open("c:/BASE1/resultado_frequencias.csv",'w')
 writer = csv.writer(result, delimiter=",", lineterminator="\n", dialect = 'excel')
@@ -109,9 +127,12 @@ for i in range(1,5):
                 listaFrequenciaZ.append(j)
                 k = 0
                 j = 0
-
+        media = 0.0
+        variancia = 0.0
+        desvio = 0.0
+        qtd = 0.0
         print(ninho+'-'+tratamento)
-#        print(listaFrequencia)
+        print('media = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)))
         writer.writerow(listaFrequenciaX)
         writer.writerow(listaFrequenciaY)
         writer.writerow(listaFrequenciaZ)
