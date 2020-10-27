@@ -1,29 +1,36 @@
 from pg_db import acc_db as acc
+from collections import Counter as ct
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+import math as mt
 import csv
 def calcMedia(lista):
     media = 0.0
-    qtd = 0.0
     for i in lista:
         media += i
-        qtd += 1
-    return (media/qtd)
+    return (media/len(lista))
 
 def calcDesvio(lista):
     media = calcMedia(lista)
-    qtd = 0.0
     variancia = 0.0
-    desvio = 0.0
     for i in lista:
-        variancia += (i-media)**2
-        qtd += 1
-    return (variancia/qtd)**0.5
+        variancia += mt.pow((i-media),2)
+    return (mt.sqrt(variancia/len(lista)))
+
+def comparaValor(atual, anterior):
+    valor = 0
+    if atual > anterior:
+        valor = 1
+    elif atual == anterior:
+        valor = 0
+    else:
+       valor = -1
+    return valor
 
 connection = acc.exec_con()
 result = open("c:/BASE1/resultado_frequencias.csv",'w')
 writer = csv.writer(result, delimiter=",", lineterminator="\n", dialect = 'excel')
-for i in range(1,5):
+for i in range(1,16):
     if i < 10:
         ninho = 'N0'+str(i)+'YCC2017'
     else:
@@ -39,64 +46,32 @@ for i in range(1,5):
         freqVoltaZ = []
         valAnt = 0
         for i in df['a_x']:
-            if i > valAnt:
-                freqIdaX.append(1)
-            elif i == valAnt:
-                freqIdaX.append(0)
-            else:
-                freqIdaX.append(-1)
+            freqIdaX.append(comparaValor(i, valAnt))
             valAnt = i
-#        print('ida')
         valAnt = 0
         for i in df['a_y']:
-            if i > valAnt:
-                freqIdaY.append(1)
-            elif i == valAnt:
-                freqIdaY.append(0)
-            else:
-                freqIdaY.append(-1)
+            freqIdaY.append(comparaValor(i, valAnt))
             valAnt = i
         valAnt = 0
         for i in df['a_z']:
-            if i > valAnt:
-                freqIdaZ.append(1)
-            elif i == valAnt:
-                freqIdaZ.append(0)
-            else:
-                freqIdaZ.append(-1)
+            freqIdaZ.append(comparaValor(i, valAnt))
             valAnt = i
         df1 = df.sort_values('r_time',ascending=False)
         valAnt = 0
         for i in df1['a_x']:
-            if i > valAnt:
-                freqVoltaX.append(1)
-            elif i == valAnt:
-                freqVoltaX.append(0)
-            else:
-                freqVoltaX.append(-1)
+            freqVoltaX.append(comparaValor(i, valAnt))
             valAnt = i
         valAnt = 0
         for i in df1['a_y']:
-            if i > valAnt:
-                freqVoltaY.append(1)
-            elif i == valAnt:
-                freqVoltaY.append(0)
-            else:
-                freqVoltaY.append(-1)
+            freqVoltaY.append(comparaValor(i, valAnt))
             valAnt = i
         valAnt = 0
         for i in df1['a_z']:
-            if i > valAnt:
-                freqVoltaZ.append(1)
-            elif i == valAnt:
-                freqVoltaZ.append(0)
-            else:
-                freqVoltaZ.append(-1)
+            freqVoltaZ.append(comparaValor(i, valAnt))
             valAnt = i
         i = 0
         j = 0
         k = 0
-#        print('volta')
         listaFrequenciaX = []
         listaFrequenciaY = []
         listaFrequenciaZ = []
@@ -127,21 +102,26 @@ for i in range(1,5):
                 listaFrequenciaZ.append(j)
                 k = 0
                 j = 0
+        contagemFrequenciaX = ct(listaFrequenciaX)
         media = 0.0
         variancia = 0.0
         desvio = 0.0
         qtd = 0.0
+#print resultados
         print(ninho+'-'+tratamento)
-        print('media X = ' +str(calcMedia(listaFrequenciaX)), 'desvio = '+str(calcDesvio(listaFrequenciaX)))
-        print('media Y = ' +str(calcMedia(listaFrequenciaY)), 'desvio = '+str(calcDesvio(listaFrequenciaY)))
-        print('media Z = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)))
+        print('media X = ' +str(calcMedia(listaFrequenciaX)), 'desvio = '+str(calcDesvio(listaFrequenciaX)), 'Min: '+ str(min(listaFrequenciaX)), 'Max: '+str(max(listaFrequenciaX)))
+        print('media Y = ' +str(calcMedia(listaFrequenciaY)), 'desvio = '+str(calcDesvio(listaFrequenciaY)), 'Min: '+ str(min(listaFrequenciaY)), 'Max: '+str(max(listaFrequenciaY)))
+        print('media Z = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)), 'Min: '+ str(min(listaFrequenciaZ)), 'Max: '+str(max(listaFrequenciaZ)))
+        print(sorted(contagemFrequenciaX))
+#exportando para csv
         writer.writerow(listaFrequenciaX)
         writer.writerow(listaFrequenciaY)
         writer.writerow(listaFrequenciaZ)
-        if ninho == "N04YCC2017":
-            plt.plot(listaFrequenciaX)
-            plt.plot(listaFrequenciaY)
-            plt.plot(listaFrequenciaZ)
-            plt.show()
+#plotando gráficos
+#        if ninho == "N04YCC2017":
+#            plt.plot(listaFrequenciaX)
+#            plt.plot(listaFrequenciaY)
+#            plt.plot(listaFrequenciaZ)
+#            plt.show()
 connection.close()
 result.close
