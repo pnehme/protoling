@@ -132,7 +132,9 @@ for i in range(1,5):
         desvio = 0.0
         qtd = 0.0
         print(ninho+'-'+tratamento)
-        print('media = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)))
+        print('media X = ' +str(calcMedia(listaFrequenciaX)), 'desvio = '+str(calcDesvio(listaFrequenciaX)))
+        print('media Y = ' +str(calcMedia(listaFrequenciaY)), 'desvio = '+str(calcDesvio(listaFrequenciaY)))
+        print('media Z = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)))
         writer.writerow(listaFrequenciaX)
         writer.writerow(listaFrequenciaY)
         writer.writerow(listaFrequenciaZ)
