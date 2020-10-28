@@ -87,7 +87,8 @@ for i in range(1,16):
 # calcula frequencias Y
         for i in range(len(freqIdaY)):
             if freqIdaY[i] == freqVoltaY[i]:
-                j += 1
+                if i != 0:
+                    j += 1
             k += 1
             if k == 512:
                 listaFrequenciaY.append(j)
@@ -109,14 +110,19 @@ for i in range(1,16):
         qtd = 0.0
 #print resultados
         print(ninho+'-'+tratamento)
-        print('media X = ' +str(calcMedia(listaFrequenciaX)), 'desvio = '+str(calcDesvio(listaFrequenciaX)), 'Min: '+ str(min(listaFrequenciaX)), 'Max: '+str(max(listaFrequenciaX)))
-        print('media Y = ' +str(calcMedia(listaFrequenciaY)), 'desvio = '+str(calcDesvio(listaFrequenciaY)), 'Min: '+ str(min(listaFrequenciaY)), 'Max: '+str(max(listaFrequenciaY)))
-        print('media Z = ' +str(calcMedia(listaFrequenciaZ)), 'desvio = '+str(calcDesvio(listaFrequenciaZ)), 'Min: '+ str(min(listaFrequenciaZ)), 'Max: '+str(max(listaFrequenciaZ)))
-        print(sorted(contagemFrequenciaX))
+        print('Freq X - media: ' +str(format(calcMedia(listaFrequenciaX),'.2f')), 'desvio: '+str(format(calcDesvio(listaFrequenciaX),'.2f')), 'min: '+ str(min(listaFrequenciaX)), 'max: '+str(max(listaFrequenciaX)))
+        print('Freq Y - media: ' +str(format(calcMedia(listaFrequenciaY),'.2f')), 'desvio: '+str(format(calcDesvio(listaFrequenciaY),'.2f')), 'min: '+ str(min(listaFrequenciaY)), 'max: '+str(max(listaFrequenciaY)))
+        print('Freq Z - media: ' +str(format(calcMedia(listaFrequenciaZ),'.2f')), 'desvio: '+str(format(calcDesvio(listaFrequenciaZ),'.2f')), 'min: '+ str(min(listaFrequenciaZ)), 'max: '+str(max(listaFrequenciaZ)))
+        print('média a_x: '+str(format(calcMedia(df1['a_x']),'.2f')),' desvio a_x: '+str(format(calcDesvio(df1['a_x']),'.2f')), 'min a_x: '+str(min(df1['a_x'])), 'max a_x: '+str(max(df1['a_x'])))
+        print('média a_y: '+str(format(calcMedia(df1['a_y']),'.2f')),' desvio a_y: '+str(format(calcDesvio(df1['a_y']),'.2f')), 'min a_y: '+str(min(df1['a_y'])), 'max a_y: '+str(max(df1['a_y'])))
+        print('média a_z: '+str(format(calcMedia(df1['a_z']),'.2f')),' desvio a_z: '+str(format(calcDesvio(df1['a_z']),'.2f')), 'max a_z: '+str(max(df1['a_z'])), 'min a_z: '+str(min(df1['a_z'])))
+        print('............................................')
+        print(' ')
 #exportando para csv
         writer.writerow(listaFrequenciaX)
         writer.writerow(listaFrequenciaY)
         writer.writerow(listaFrequenciaZ)
+result.close
 #plotando gráficos
 #        if ninho == "N04YCC2017":
 #            plt.plot(listaFrequenciaX)
@@ -124,4 +130,4 @@ for i in range(1,16):
 #            plt.plot(listaFrequenciaZ)
 #            plt.show()
 connection.close()
-result.close
+
