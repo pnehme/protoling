@@ -1,7 +1,7 @@
 from pg_db import acc_db as acc
 from collections import Counter as ct
 import pandas as pd
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import math as mt
 import csv
 def calcMedia(lista):
@@ -108,6 +108,7 @@ for i in range(1,16):
         variancia = 0.0
         desvio = 0.0
         qtd = 0.0
+        eventoFrequencia = []
 #print resultados
         print(ninho+'-'+tratamento)
         print('Freq X - media: ' +str(format(calcMedia(listaFrequenciaX),'.2f')), 'desvio: '+str(format(calcDesvio(listaFrequenciaX),'.2f')), 'min: '+ str(min(listaFrequenciaX)), 'max: '+str(max(listaFrequenciaX)))
@@ -122,6 +123,22 @@ for i in range(1,16):
         writer.writerow(listaFrequenciaX)
         writer.writerow(listaFrequenciaY)
         writer.writerow(listaFrequenciaZ)
+        media = calcMedia(listaFrequenciaZ)
+        desvio = calcDesvio(listaFrequenciaZ)
+        for i in listaFrequenciaX:
+            if i > media + 1.5 * desvio:
+                eventoFrequencia.append(1)
+            elif media - 1.5 * desvio <= i <= media + 1.5 * desvio:
+                eventoFrequencia.append(0)
+            else:
+                eventoFrequencia.append(-1)
+        plt.title(ninho+' - '+tratamento)
+        plt.xlabel('segundos')
+        plt.ylabel('evento')
+        plt.plot(eventoFrequencia)
+        plt.savefig('c:/base1/'+ninho+'-'+tratamento+'.pdf')
+        plt.close()
+
 result.close
 #plotando gráficos
 #        if ninho == "N04YCC2017":
