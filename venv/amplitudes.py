@@ -16,20 +16,15 @@ def calcDesvio(lista):
         variancia += mt.pow((i-media),2)
     return (mt.sqrt(variancia/len(lista)))
 
-def comparaAmplitude(x, mediax, sdx):
+def comparaAmplitude(x, minimo, maximo):
     valor = ''
-    codigo_sup = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1', 'K1', 'L1', 'M1', 'N1', 'O1', 'P1', 'Q1', 'R1', 'S1', 'T1']
-    codigo_inf = ['A0', 'B0', 'C0', 'D0', 'E0', 'F0', 'G0', 'H0', 'I0', 'J0', 'K0', 'L0', 'M0', 'N0', 'O0', 'P0', 'Q0', 'R0', 'S0', 'T0']
-    if x > mediax + 2 * sdx:
-        for i in range(21):
-            if (mediax + 2 * sdx) * (1 + 5 * (i-1) * 0.01) <= x < (mediax + 2 * sdx) * (1 + 5 * i * 0.01):
-                valor = codigo_sup[i-1]
-    elif x < mediax - 2 * sdx:
-        for i in range(21):
-            if (mediax - 2 * sdx) * (1 + 5 * (i) * 0.01) <= x < (mediax - 2 * sdx) * (1 + 5 * (i - 1) * 0.01):
-                valor = codigo_inf[i-1]
-    else:
-        valor = '*'
+    passo = 0
+    codigo = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+    passo = maximo - minimo
+    passo = passo / 20
+    for i in range(21):
+        if minimo + passo * (i - 1) <= x < minimo + passo * i:
+           valor = codigo[i - 1]
     return valor
 
 connection = acc.exec_con()
@@ -46,28 +41,42 @@ for i in range(1,16):
         df = pd.read_sql_query("select nest_id, treatment, a_x, a_y, a_z, r_time from data_frequency where nest_id = '"+ninho+"' and treatment = '"+tratamento+"' order by nest_id, treatment, r_time", connection)
 
 #cálculo dos picos de amplitude > 2sigma para X
-        xbarra = calcMedia(df['a_x'])
-        ybarra = calcMedia(df['a_y'])
-        zbarra = calcMedia(df['a_z'])
-        xsigma = calcDesvio(df['a_x'])
-        ysigma = calcDesvio(df['a_y'])
-        zsigma = calcDesvio(df['a_z'])
-        picoXYZ = [[],[],[]]
+        mediax = df['a_x'].mean()
+        mediay = df['a_y'].mean()
+        mediaz = df['a_z'].mean()
+        sigmax = df['a_x'].std()
+        sigmay = df['a_y'].std()
+        sigmaz = df['a_z'].std()
+        minx = df['a_x'].min()
+        maxx = df['a_x'].max()
+        miny = df['a_y'].min()
+        maxy = df['a_y'].max()
+        minz = df['a_z'].min()
+        maxz = df['a_z'].max()
         ampX = ''
         ampY = ''
         ampZ = ''
         palavra = ''
-        file.write(ninho+'-'+tratamento)
-        for index, rows in df.iterrows():
-            ampX = comparaAmplitude(rows['a_x'], xbarra, xsigma)
-            ampY = comparaAmplitude(rows['a_y'], ybarra, ysigma)
-            ampZ = comparaAmplitude(rows['a_z'], zbarra, zsigma)
-            palavra = palavra + ampX + ampY + ampZ
+        limite = 1.5
+#        print(mediax, sigmax, minx, maxx)
+#        print(mediay, sigmay, miny, maxy)
+#        print(mediaz, sigmaz, minz, maxz)
+        file.write(ninho+'-'+tratamento+'\n')
+        for rows in df.itertuples():
+            if (rows.a_x > mediax + limite * sigmax) or (rows.a_x < mediax - limite * sigmax):
+                ampX = comparaAmplitude(rows.a_x, minx, maxx)
+            if (rows.a_y > mediay + limite * sigmay) or (rows.a_y < mediay - limite * sigmay):
+                ampY = comparaAmplitude(rows.a_y, miny, maxy)
+            if (rows.a_z > mediaz + limite * sigmaz) or (rows.a_z < mediaz - limite * sigmaz):
+                ampZ = comparaAmplitude(rows.a_z, minz, maxz)
+            if (ampX + ampY + ampZ) != '':
+                palavra = palavra + ampX + ampY + ampZ + ' '
             i += 1
             if i == 512:
-                file.write(palavra + '/n')
+                file.write(palavra + ' * ')
                 i = 0
                 palavra = ''
+        file.write('\n')
         print(ninho+'-'+tratamento)
 
 #exportando para csv
