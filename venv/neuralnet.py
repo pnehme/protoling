@@ -11,7 +11,7 @@ df = pd.read_sql_query("select a_x, a_y, a_z from data_vibration where nest_id =
 
 population = []
 for rows in df.itertuples():
-    population.append([rows.a_y,rows.a_z])
+    population.append([rows.a_x,rows.a_z])
 print(population)
 # Cores a serem utilizadas pelo Matplotlib para apresentar os dados.
 colors = [
@@ -39,18 +39,22 @@ colors = [
 
 color_names = {"#FF0000": "vermelho", "#00FF00": "verde", "#0000FF": "azul"}
 
+
 plt.title("Distribuicao dos dados da coleta")
-plt.xlabel("eixo Y")
+plt.xlabel("eixo X")
 plt.ylabel("eixo Z")
 print(len(population))
 for i in range(0, len(population)):
     plt.scatter(population[i][0], population[i][1], color="green")
 
 X = np.array(population)
+kmeans = KMeans(n_clusters=10, init ='k-means++', max_iter=300, n_init=10, random_state=0).fit(X)
+
+#plot variance for each value for 'k' between 1,10
 
 # Executa k-means sobre os pontos onde as pessoas est�o concentradas,
 # simulacao com k = 3.
-kmeans = KMeans(n_clusters=20, random_state=0).fit(X)
+#kmeans = KMeans(n_clusters=10, init ='k-means++', max_iter=300, n_init=10, random_state=0).fit(X)
 print("KMeans - Scikit-Learn")
 print("Labels")
 print(kmeans.labels_)
@@ -59,8 +63,9 @@ print(kmeans.cluster_centers_)
 
 for i in range(0, len(kmeans.cluster_centers_)):
     color_idx = i
-    plt.scatter(kmeans.cluster_centers_[i][0], kmeans.cluster_centers_[i][1], color=colors[color_idx], marker="+",
+    plt.scatter(kmeans.cluster_centers_[i][0], kmeans.cluster_centers_[i][1], color=colors[color_idx],
                 s=100)
+
 plt.show()
 
 # Tenta prever a qual cluster pertence determinada pessoa dada sua localiza��o.
