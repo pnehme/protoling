@@ -4,14 +4,17 @@ from pg_db import acc_db as acc
 import numpy as np
 import pandas as pd
 import csv
+indice = 0
 connection = acc.exec_con()
 cabecalho = ['nest_id','treatment','r_time','a_x','a_y','a_z']
+file = open("c:/BASE1/NNTW/norma.csv", "w")
 for i in range(1,16):
     if i < 10:
         ninho = 'N0'+str(i)+'YCC2017'
     else:
         ninho = 'N'+str(i)+'YCC2017'
     for j in range(1,5):
+        indice += 1
         tratamento = 'T0'+str(j)
         df = pd.read_sql_query("select a_x, a_y, a_z, r_time from data_vibration_1 where nest_id = '"+ninho+"' and treatment = '"+tratamento+"' order by r_time", connection)
         population = []
@@ -25,19 +28,21 @@ for i in range(1,16):
 #        print(ninho, tratamento, format(media, '.2f'), format(sigma,'.2f'), format(minimo, '.2f'), format(maximo, '.2f'))
 
         dados = ""
-        passo = 1
+        passo = 0
         for i in range(len(population)):
             if population[i][0] > media + 10*sigma:
                 if len(population) - i >= 512:
                     for k in range(513):
-                        dados += str(format(population[k+i][0], ".2f"))+";"+str(population[k+i][1])+"\n"
+                        dados += str(format(population[k+i][0], ".2f"))+","
+                    dados += str(indice)+'\n'
                     i += 512
-                    file = open("c:/BASE1/NNTW/norma_" + ninho + "-" + tratamento + "-" + str(passo) + ".txt", "w")
                     file.write(dados)
-                    file.close()
                     dados = ""
                     passo += 1
                     print(ninho, tratamento, str(passo))
+            if passo == 1:
+                break
+file.close()
 #        X_3sigma = np.array(dados)
 #        plt.xlabel('tempo(segundos)')
 #        plt.ylabel('norma(x,y,z) > 3sigma')

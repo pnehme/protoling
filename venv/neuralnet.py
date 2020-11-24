@@ -1,14 +1,59 @@
 from matplotlib import pyplot as plt
-from sklearn.cluster import KMeans
+from sklearn.neural_network import MLPClassifier
 from pg_db import acc_db as acc
 import numpy as np
 import pandas as pd
+target = np.identity(60,dtype=float)
+entrada = []
+indice = 0
+for i in range(1,16):
+    if i < 10:
+        ninho = 'N0'+str(i)
+    else:
+        ninho = 'N'+str(i)
+    for j in range(1,5):
+        tratamento = 'T0'+str(j)
+        arquivo = open('/BASE1/NNTW/norma_'+ninho+'YCC2017-'+tratamento+'-1.txt', 'r')
+        lista = arquivo.read()
+        lista = lista.replace('\n', ';')
+        dados = lista.split(';')
+#        print(dados)
+        lista = []
+        i = 0
+        for x in dados:
+            i += 1
+            if i % 2 != 0:
+                if x != '':
+                    lista.append(x)
+        a = np.array(lista, dtype=float)
+        entrada.append([a,target[indice]])
+        indice += 1
+        arquivo.close()
 
+redeneural = MLPClassifier(verbose=True,
+                           max_iter=1000,
+                           tol=0.00001,
+                           activation='logistic',
+                           learning_rate_init=0.001)
+redeneural.fit(entrada[0,:],entrada[:,1])
+'''
 connection = acc.exec_con()
 cabecalho = ['nest_id','treatment','r_time', 'a_x', 'a_y', 'a_z']
+for i in range(1,16):
+    if i < 10:
+        ninho = 'N0'+str(i)+'YCC2017'
+    else:
+        ninho = 'N'+str(i)+'YCC2017'
+    for j in range(1,5):
+        tratamento = 'T0'+str(j)
+        df = pd.read_sql_query("select a_x, a_y, a_z, r_time from data_vibration_1 where nest_id = '"+ninho+"' and treatment = '"+tratamento+"' order by r_time", connection)
+        population = []
+        for rows in df.itertuples():
+            population.append([mt.sqrt(rows.a_x**2 + rows.a_y**2 + rows.a_z**2),rows.r_time])
+
+
+
 df = pd.read_sql_query("select a_x, a_y, a_z from data_vibration where nest_id = 'N01YCC2017-V01' and treatment = 'T02' order by r_time", connection)
-
-
 population = []
 for rows in df.itertuples():
     population.append([rows.a_x,rows.a_z])
@@ -73,3 +118,4 @@ plt.show()
 #cluster_id = kmeans.predict(osasco_person)
 #print("Morador de Osasco deve ir para hospital: %s" % cluster_id)
 #print("Cor: %s" % color_names[colors[int(cluster_id)]])
+'''
