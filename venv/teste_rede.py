@@ -17,9 +17,9 @@ def comparaAmplitude(x, minimo, maximo):
 
 connection = acc.exec_con()
 
-norma = pd.read_csv('c:/BASE1/NNTW/norma_cluster_faixas.csv')
-entradas = norma.iloc[0:171,0:510].copy()
-saidas = norma.iloc[0:171,511:570].copy()
+norma = pd.read_csv('c:/BASE1/NNTW/norma_padroes_fit.csv')
+entradas = norma.iloc[0:171,0:511].copy()
+saidas = norma.iloc[0:171,512:570].copy()
 
 
 redeneural = MLPClassifier(verbose=True,
@@ -29,6 +29,7 @@ redeneural = MLPClassifier(verbose=True,
                            learning_rate_init=0.001)
 redeneural.n_outputs_= 59
 redeneural.fit(entradas,saidas)
+'''
 ninho = 'N01YCC2017'
 tratamento = 'T01'
 df = pd.read_sql_query(
@@ -50,3 +51,4 @@ for n in range(len(population)):
         dados = []
         i = 0
 
+'''
