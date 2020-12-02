@@ -1,7 +1,8 @@
 from sklearn.neural_network import MLPClassifier
+from pg_db import acc_db as acc
 import math as mt
 import pandas as pd
-from pg_db import acc_db as acc
+import numpy as np
 import csv
 
 def comparaAmplitude(x, minimo, maximo):
@@ -9,8 +10,8 @@ def comparaAmplitude(x, minimo, maximo):
     passo = 0
     passo = maximo - minimo
     passo = passo / 40
-    for i in range(1,41):
-        if minimo + passo * (i - 1) <= x < minimo + passo * i:
+    for i in range(40):
+        if minimo + passo * i <= x < minimo + passo * (i + 1):
            valor = i/40
     return valor
 
@@ -20,7 +21,8 @@ norma = pd.read_csv('c:/BASE1/NNTW/norma_cluster_faixas.csv')
 entradas = norma.iloc[0:171,0:510].copy()
 saidas = norma.iloc[0:171,511:570].copy()
 
-redeneural = MLPClassifier(verbose=False,
+
+redeneural = MLPClassifier(verbose=True,
                            max_iter=100000,
                            tol=0.00001,
                            activation='logistic',
@@ -38,9 +40,13 @@ for rows in df.itertuples():
     population.append(mt.sqrt(rows.a_x ** 2 + rows.a_y ** 2 + rows.a_z ** 2))
 minimo = min(population)
 maximo = max(population)
-
+dados = []
 for n in range(len(population)):
-    population[n] = comparaAmplitude(population[n], minimo, maximo)
-
-X
+    dados.append(comparaAmplitude(population[n], minimo, maximo))
+    i = i+1
+    if i == 510:
+        X = np.array(dados).reshape(1,-1)
+        print(redeneural.predict(X))
+        dados = []
+        i = 0
 

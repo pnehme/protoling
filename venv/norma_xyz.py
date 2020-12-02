@@ -10,9 +10,9 @@ def comparaAmplitude(x, minimo, maximo):
     passo = 0
     passo = maximo - minimo
     passo = passo / 40
-    for i in range(1,41):
-        if minimo + passo * (i - 1) <= x < minimo + passo * i:
-           valor = i/41
+    for i in range(40):
+        if minimo + passo * i <= x < minimo + passo * (i + 1):
+           valor = i/40
     return valor
 
 target = np.identity(59,dtype=float)
