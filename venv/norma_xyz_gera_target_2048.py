@@ -16,10 +16,10 @@ def comparaAmplitude(x, minimo, maximo):
     return valor
 
 connection = acc.exec_con()
-target = np.identity(59,dtype=float)
+target = np.identity(6,dtype=float)
 dados = ''
 indice = -1
-file = open("c:/BASE1/NNTW/norma_padroes_fit.csv", "w")
+file = open("c:/BASE1/NNTW/norma_padroes_2048_fit.csv", "w")
 '''
 cabecalho = ''
 for i in range(1,513):
@@ -31,7 +31,7 @@ for i in range(1001,1060):
         cabecalho += str(i) + '\n'
 file.write(cabecalho)
 '''
-for i in range(1,16):
+for i in range(1,4):
     if i < 10:
         ninho = 'N0'+str(i)+'YCC2017'
     else:
@@ -51,15 +51,15 @@ for i in range(1,16):
         passo = 0
         for i in range(len(population)):
             if population[i][0] > media + 4 * sigma:
-                if len(population) - i >= 512:
-                    for k in range(1,513):
+                if len(population) - i >= 2048:
+                    for k in range(1,2049):
                         dados += str(comparaAmplitude(population[k+i][0], minimo, maximo)) + "," 
-                    for id in range(0,59):
-                        if id < 58:
+                    for id in range(0,5):
+                        if id < 5:
                             dados += str(target[indice][id]) + ','
                         else:
                             dados += str(target[indice][id]) + '\n'
-                    i += 512
+                    i += 2048
                     file.write(dados)
                     dados = ""
                     passo += 1

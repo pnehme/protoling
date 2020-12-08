@@ -18,25 +18,22 @@ def comparaAmplitude(x, minimo, maximo):
 
 connection = acc.exec_con()
 
-norma = pd.read_csv('c:/BASE1/NNTW/norma_padroes_fit.csv')
-entradas = norma.iloc[0:171,0:511].copy()
-saidas = norma.iloc[0:171,512:570].copy()
-
-
+norma = pd.read_csv('c:/BASE1/NNTW/norma_padroes_2048_fit.csv')
+entradas = norma.iloc[0:171,0:2047].copy()
+saidas = norma.iloc[0:171,2048:2053].copy()
 
 redeneural = MLPClassifier(verbose=True,
                            max_iter=100000,
                            tol=0.00001,
                            activation='logistic',
                            learning_rate_init=0.001)
+redeneural.n_outputs_= 6
+redeneural.fit(entradas,saidas)
 '''
-meu_arquivo = open('c:/BASE1/NNTW/weights.p', 'wb')
+meu_arquivo = open('c:/BASE1/NNTW/weigths.p', 'wb')
 
 pickle.dump(redeneural, meu_arquivo)
 meu_arquivo.close()
-#redeneural.n_outputs_= 59
-#redeneural.fit(entradas,saidas)
-'''
 
 meu_arquivo = open('c:/BASE1/NNTW/weights.p',  'rb')
 redeneural = pickle.load(meu_arquivo)
@@ -61,4 +58,4 @@ for n in range(len(population)):
         print(S)
         dados = []
         i = 0
-
+'''
