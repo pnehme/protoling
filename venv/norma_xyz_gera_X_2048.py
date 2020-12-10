@@ -32,7 +32,7 @@ connection = acc.exec_con()
 target = np.identity(6, dtype=float)
 dados = ""
 padrao = ""
-file = open("c:/BASE1/NNTW/norma_padroes_2048_fit.csv", "w")
+file = open("c:/BASE1/NNTW/norma_padroes_2048.csv", "w")
 
 for i in range(1, 16):
     if i < 10:
@@ -42,7 +42,7 @@ for i in range(1, 16):
     for j in range(1, 5):
         tratamento = 'T0' + str(j)
         df = pd.read_sql_query(
-            "select a_x, a_y, a_z, r_time from data_vibration_1 where r_time > 30 and nest_id = '" + ninho + "' and treatment = '" + tratamento + "' order by r_time limit 20000",
+            "select a_x, a_y, a_z, r_time from data_vibration_1 where nest_id = '" + ninho + "' and treatment = '" + tratamento + "' order by r_time",
             connection)
         population = []
         for rows in df.itertuples():
@@ -62,39 +62,9 @@ for i in range(1, 16):
                 for k in range(1, 2049):
                     norma_vetor_cat = comparaAmplitude(population[k + i][0], minimo, maximo)
                     dados += str(norma_vetor_cat) + ","
-
-                    freq.append(population[k + i][0])
-                    # definindo o padrão da amplitude
-                    if norma_vetor_cat <= 0.20:
-                        padrao = "0,0,1,"
-                    elif norma_vetor_cat <= 0.40:
-                        padrao = "0,1,0,"
-                    else:
-                        padrao = "1,0,0,"
-                    # cálculo de frequencia
-                valAnt = 0
-                for j in range(len(freq)):
-                    teste_ida.append(comparaValor(freq[j], valAnt))
-                    valAnt = freq[j]
-                valAnt = 0
-                for j in range(1,len(freq)):
-                    teste_volta.append(comparaValor(freq[len(freq)-j], valAnt))
-                    valAnt = freq[len(freq)-j]
-                for j in range(len(freq)-1):
-                    if teste_ida[j] == teste_volta[j]:
-                        frequencia += 1
-
-                # definindo o padrão da frequência
-                if frequencia / len(freq) < 0.33:
-                    padrao += "0,0,1\n"
-                elif frequencia / len(freq) < 0.66:
-                    padrao += "0,1,0\n"
-                else:
-                    padrao += "1,0,0\n"
-
-                dados += padrao
+                dados += "\n"
                 file.write(dados)
-                print(ninho+"-"+tratamento+"-"+str(i)+"-"+str(norma_vetor_cat)+"-"+str(frequencia / len(freq)))
+                print(ninho+"-"+tratamento+"-"+str(i))
                 i += 2048
             i += 1
 file.close()
