@@ -32,8 +32,6 @@ connection = acc.exec_con()
 target = np.identity(6, dtype=float)
 dados = ""
 padrao = ""
-file = open("c:/BASE1/NNTW/norma_padroes_2048.csv", "w")
-
 for i in range(1, 16):
     if i < 10:
         ninho = 'N0' + str(i) + 'YCC2017'
@@ -41,32 +39,30 @@ for i in range(1, 16):
         ninho = 'N' + str(i) + 'YCC2017'
     for j in range(1, 5):
         tratamento = 'T0' + str(j)
+        file = open("c:/BASE1/NNTW/2048/norma_2048"+ninho+"-"+tratamento+".csv", "w")
         df = pd.read_sql_query(
             "select a_x, a_y, a_z, r_time from data_vibration_1 where nest_id = '" + ninho + "' and treatment = '" + tratamento + "' order by r_time",
             connection)
         population = []
         for rows in df.itertuples():
             population.append([mt.sqrt(rows.a_x ** 2 + rows.a_y ** 2 + rows.a_z ** 2), rows.r_time])
+        i = 1
+        tempo = ""
+        bloco = 0
         X = np.array(population)
         media = X[:, 0].mean()
         sigma = X[:, 0].std()
-        minimo = X[:, 0].min()
-        maximo = X[:, 0].max()
-        i = 1
         while (len(population) - i >= 2048):
             if population[i][0] > media + 4 * sigma:
-                freq = []
-                teste_ida = []
-                teste_volta = []
-                frequencia = 0
+                bloco += 1
+                tempo = str(population[i][1])
                 for k in range(2048):
-                    norma_vetor_cat = comparaAmplitude(population[k + i][0], minimo, maximo)
                     if k < 2047:
-                        dados += str(norma_vetor_cat) + ","
+                        dados += str(format(population[k + i][0],'.2f')) + ","
                     else:
-                        dados += str(norma_vetor_cat) + "\n"
+                        dados += str(format(population[k + i][0],'.2f')) + "\n"
                 file.write(dados)
-                print(ninho+"-"+tratamento+"-"+str(i))
+                print(ninho+"-"+tratamento+"-bloco="+str(bloco)+"-"+tempo)
                 i += 2048
             i += 1
-file.close()
+        file.close()

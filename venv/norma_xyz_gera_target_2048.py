@@ -13,7 +13,7 @@ def comparaAmplitude(x, minimo, maximo):
     passo = passo / 40
     for i in range(40):
         if minimo + passo * i <= x < minimo + passo * (i + 1):
-            valor = i / 40
+            valor = (i + 1) / 40
     return valor
 
 
@@ -29,7 +29,6 @@ def comparaValor(atual, anterior):
 
 
 connection = acc.exec_con()
-target = np.identity(6, dtype=float)
 dados = ""
 padrao = ""
 file = open("c:/BASE1/NNTW/norma_padroes_2048_fit.csv", "w")
@@ -55,43 +54,41 @@ for i in range(1, 16):
         i = 1
         while (len(population) - i >= 2048):
             if population[i][0] > media + 4 * sigma:
+#cálculo padrão amplitude
+                if population[i][0]/maximo < 0.94:
+                    padrao = '0,0,1,'
+                elif population[i][0]/maximo < 0.97:
+                    padrao = '0,1,0,'
+                else:
+                    padrao = '1,0,0,'
                 freq = []
                 teste_ida = []
                 teste_volta = []
                 frequencia = 0
-                for k in range(1, 2049):
+                for k in range(2048):
                     norma_vetor_cat = comparaAmplitude(population[k + i][0], minimo, maximo)
                     dados += str(norma_vetor_cat) + ","
-
                     freq.append(population[k + i][0])
-                    # definindo o padrão da amplitude
-                    if norma_vetor_cat <= 0.20:
-                        padrao = "0,0,1,"
-                    elif norma_vetor_cat <= 0.40:
-                        padrao = "0,1,0,"
-                    else:
-                        padrao = "1,0,0,"
-                    # cálculo de frequencia
+# cálculo de frequencia
                 valAnt = 0
                 for j in range(len(freq)):
                     teste_ida.append(comparaValor(freq[j], valAnt))
                     valAnt = freq[j]
                 valAnt = 0
-                for j in range(1,len(freq)):
-                    teste_volta.append(comparaValor(freq[len(freq)-j], valAnt))
-                    valAnt = freq[len(freq)-j]
-                for j in range(len(freq)-1):
-                    if teste_ida[j] == teste_volta[j]:
+                for j in range(len(freq)):
+                    teste_volta.append(comparaValor(freq[len(freq)-(j + 1)], valAnt))
+                    valAnt = freq[len(freq)-(j + 1)]
+                for j in range(len(freq)):
+                    if teste_ida[j] + teste_volta[j] == 2:
                         frequencia += 1
 
-                # definindo o padrão da frequência
-                if frequencia / len(freq) < 0.33:
+# definindo o padrão da frequência
+                if frequencia / len(freq) < 0.25:
                     padrao += "0,0,1\n"
-                elif frequencia / len(freq) < 0.66:
+                elif frequencia / len(freq) < 0.35:
                     padrao += "0,1,0\n"
                 else:
                     padrao += "1,0,0\n"
-
                 dados += padrao
                 file.write(dados)
                 print(ninho+"-"+tratamento+"-"+str(i)+"-"+str(norma_vetor_cat)+"-"+str(frequencia / len(freq)))

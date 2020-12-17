@@ -17,10 +17,12 @@ def comparaAmplitude(x, minimo, maximo):
     return valor
 
 connection = acc.exec_con()
+result = open("c:/BASE1/NNTW/resultado_rede2048.csv",'w')
+writer = csv.writer(result, delimiter=",", lineterminator="\n", dialect = 'excel')
 
 norma = pd.read_csv('c:/BASE1/NNTW/norma_padroes_2048_fit.csv')
-entradas = norma.iloc[0:73,0:2047].copy()
-saidas = norma.iloc[0:73,2048:2053].copy()
+entradas = norma.iloc[0:73,0:2048].copy()
+saidas = norma.iloc[0:73,2048:2054].copy()
 
 redeneural = MLPClassifier(verbose=True,
                            max_iter=10000,
@@ -29,7 +31,6 @@ redeneural = MLPClassifier(verbose=True,
                            learning_rate_init=0.001)
 redeneural.n_outputs_= 6
 redeneural.fit(entradas,saidas)
-'''
-X = pd.read_csv('c:/BASE1/NNTW/norma_padroes_2048.csv')
-print(redeneural.predict(X))
-'''
+X = pd.read_csv('c:/BASE1/NNTW/norma_padroes_2048_1.csv')
+writer.writerow(redeneural.predict(X))
+result.close()
