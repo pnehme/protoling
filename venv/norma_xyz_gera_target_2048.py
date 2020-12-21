@@ -53,14 +53,16 @@ for i in range(1, 16):
         maximo = X[:, 0].max()
         i = 1
         while (len(population) - i >= 2048):
-            if population[i][0] > media + 4 * sigma:
+            if population[i][0] > media + 3 * sigma:
 #cálculo padrão amplitude
+                padrao = ""
                 if population[i][0]/maximo < 0.94:
-                    padrao = '0,0,1,'
+                    padrao = 'A'
                 elif population[i][0]/maximo < 0.97:
-                    padrao = '0,1,0,'
+                    padrao = 'B'
                 else:
-                    padrao = '1,0,0,'
+                    padrao = 'C'
+                dados = ""
                 freq = []
                 teste_ida = []
                 teste_volta = []
@@ -84,11 +86,29 @@ for i in range(1, 16):
 
 # definindo o padrão da frequência
                 if frequencia / len(freq) < 0.25:
-                    padrao += "0,0,1\n"
+                    padrao += "A"
                 elif frequencia / len(freq) < 0.35:
-                    padrao += "0,1,0\n"
+                    padrao += "B"
                 else:
-                    padrao += "1,0,0\n"
+                    padrao += "C"
+                if padrao == "AA":
+                    padrao = "0,0,0,0,0,0,0,0,1\n"
+                elif padrao == "AB":
+                    padrao = "0,0,0,0,0,0,0,1,0\n"
+                elif padrao == "AC":
+                    padrao = "0,0,0,0,0,0,1,0,0\n"
+                elif padrao == "BA":
+                    padrao = "0,0,0,0,0,1,0,0,0\n"
+                elif padrao == "BB":
+                    padrao = "0,0,0,0,1,0,0,0,0\n"
+                elif padrao == "BC":
+                    padrao = "0,0,0,1,0,0,0,0,0\n"
+                elif padrao == "CA":
+                    padrao = "0,0,1,0,0,0,0,0,0\n"
+                elif padrao == "CB":
+                    padrao = "0,1,0,0,0,0,0,0,0\n"
+                else:
+                    padrao = "1,0,0,0,0,0,0,0,0\n"
                 dados += padrao
                 file.write(dados)
                 print(ninho+"-"+tratamento+"-"+str(i)+"-"+str(norma_vetor_cat)+"-"+str(frequencia / len(freq)))

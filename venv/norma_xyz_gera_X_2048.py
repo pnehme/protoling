@@ -54,7 +54,8 @@ for i in range(1, 16):
         maximo = X[:, 0].max()
         i = 1
         while (len(population) - i >= 2048):
-            if population[i][0] > media + 4 * sigma:
+            if population[i][0] > media + 3 * sigma:
+                dados = ""
                 freq = []
                 teste_ida = []
                 teste_volta = []
