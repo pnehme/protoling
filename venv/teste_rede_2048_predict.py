@@ -13,6 +13,9 @@ with open(filename, 'rb') as file:
     modelo_carregado = pickle.load(file)
 
 X = pd.read_csv('c:/BASE1/NNTW/norma_padroes_2048.csv')
+counter = 1
 for line in modelo_carregado.predict(X):
     writer.writerow(line)
+    print(counter, X.iloc[0:counter,0:10].copy())
+    counter += 1
 result.close()

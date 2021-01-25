@@ -33,7 +33,11 @@ target = np.identity(6, dtype=float)
 dados = ""
 padrao = ""
 file = open("c:/BASE1/NNTW/norma_padroes_2048.csv", "w")
-
+cabecalho = ""
+for campo in range(1,2049):
+    cabecalho += str(campo)+','
+cabecalho += "2049\n"
+file.write(cabecalho)
 for i in range(1, 16):
     if i < 10:
         ninho = 'N0' + str(i) + 'YCC2017'
@@ -67,7 +71,7 @@ for i in range(1, 16):
                     else:
                         dados += str(norma_vetor_cat) + "\n"
                 file.write(dados)
-                print(ninho+"-"+tratamento+"-"+str(i))
+                print(ninho+","+tratamento+","+str(population[i][1]))
                 i += 2048
             i += 1
 file.close()

@@ -53,7 +53,8 @@ for i in range(1, 16):
         media = X[:, 0].mean()
         sigma = X[:, 0].std()
         while (len(population) - i >= 2048):
-            if population[i][0] > media + 4 * sigma:
+            if population[i][0] > media + 3 * sigma:
+                dados = ""
                 bloco += 1
                 tempo = str(population[i][1])
                 for k in range(2048):
