@@ -10,10 +10,10 @@ def comparaAmplitude(x, minimo, maximo):
     valor = 0
     passo = 0
     passo = maximo - minimo
-    passo = passo / 40
-    for i in range(40):
+    passo = passo / 10
+    for i in range(10):
         if minimo + passo * i <= x < minimo + passo * (i + 1):
-            valor = (i + 1) / 40
+            valor = (i + 1) / 10
     return valor
 
 
@@ -29,12 +29,13 @@ def comparaValor(atual, anterior):
 
 def buscaPadrao(indice):
     padrao = ""
-    vetor = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0','0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+#    vetor = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0','0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
 #    vetor = ['0','0','0','0','0','0','0','0','0','0']
 #    vetor = ['0','0','0','0']
+    vetor = ['0','0','0','0']
     vetor.insert(indice,'1') #lembrar que o indice dado pelo cluster é de 0 a 4
-    for i in range(20):
-        if i < 19:
+    for i in range(4):
+        if i < 3:
             padrao += vetor[i] +','
         else:
             padrao += vetor[i] +'\n'

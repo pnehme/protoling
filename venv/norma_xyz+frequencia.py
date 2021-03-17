@@ -5,19 +5,6 @@ import numpy as np
 import pandas as pd
 import csv
 
-''' anterior definido em 40 faixas 
-def comparaAmplitude(x, minimo, maximo):
-    valor = 0
-    passo = 0
-    passo = maximo - minimo
-    passo = passo / 40
-    for i in range(40):
-        if minimo + passo * i <= x < minimo + passo * (i + 1):
-            valor = (i + 1) / 40
-    return valor
-'''
-
-
 def comparaAmplitude(x, minimo, maximo):
     valor = 0
     passo = 0
@@ -40,13 +27,10 @@ def comparaValor(atual, anterior):
 
 
 connection = acc.exec_con()
-'''
-dados = ""
-padrao = ""
-'''
 
-file = open("c:/BASE1/NNTW/amplitude-frequencia_vetores.csv", "w")
-
+file = open("c:/BASE1/NNTW/amplitude-"
+            "frequencia_vetores.csv", "w")
+linha = ""
 for i in range(1, 16):
     if i < 10:
         ninho = 'N0' + str(i) + 'YCC2017'
@@ -55,11 +39,16 @@ for i in range(1, 16):
     for j in range(1, 5):
         tratamento = 'T0' + str(j)
         df = pd.read_sql_query(
-            "select a_x, a_y, a_z, r_time from data_vibration_1 where r_time > 30 and nest_id = '" + ninho + "' and treatment = '" + tratamento + "' order by r_time limit 40000",
+            "select a_x, a_y, a_z, r_time from "
+            "data_vibration_1 where r_time > 30 and nest_id = '" +
+            ninho + "' and treatment = '" + tratamento +
+            "' order by r_time limit 40000",
             connection)
         population = []
         for rows in df.itertuples():
-            population.append([mt.sqrt(rows.a_x ** 2 + rows.a_y ** 2 + rows.a_z ** 2), rows.r_time])
+            population.append([mt.sqrt(rows.a_x ** 2 +
+                                       rows.a_y ** 2 + rows.a_z ** 2),
+                                       [rows.r_time])
         X = np.array(population)
         media = X[:, 0].mean()
         sigma = X[:, 0].std()
@@ -72,7 +61,8 @@ for i in range(1, 16):
                 norma_vetor_cat = []
                 freq = []
                 for k in range(512):
-                    norma_vetor_cat.append(comparaAmplitude(population[k + i][0], minimo, maximo))
+                    norma_vetor_cat.append(comparaAmplitude(population[k + i][0],
+                                                            minimo, maximo))
                     freq.append(population[k + i][0])
 # cálculo de frequencia
                 teste_ida = []
@@ -90,7 +80,11 @@ for i in range(1, 16):
                     if teste_ida[j] + teste_volta[j] == 2:
                         frequencia += 1
                 AmpMedia = np.array(norma_vetor_cat).mean()
-                print(ninho+","+tratamento+","+str(i)+","+str(format(AmpMedia, '.2f'))+","+str(format(frequencia/len(freq), '.2f')))
+                linha += ninho+","+tratamento+","+str(i)+","+\
+                         str(format(AmpMedia, '.2f'))+","+\
+                         str(format(frequencia, '.2f'))+"\n"
+                file.write(linha)
+                linha = ""
                 i += 512
             i += 1
-#file.close()
+file.close()

@@ -6,8 +6,8 @@ import pickle
 
 
 norma = pd.read_csv('c:/BASE1/NNTW/norma_padroes_512_fit.csv')
-entradas = norma.iloc[1:1069,0:512].copy()
-saidas = norma.iloc[1:1069,512:516].copy()
+entradas = norma.iloc[1:600,0:512].copy()
+saidas = norma.iloc[1:600,512:514].copy()
 #print(entradas)
 
 redeneural = MLPClassifier(verbose=True,

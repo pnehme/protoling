@@ -1,13 +1,12 @@
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
-from pg_db import acc_db as acc
 import numpy as np
 import pandas as pd
 
 population = pd.read_csv('c:/BASE1/NNTW/parametros.csv')
 X = np.array(population)
-kmeans = KMeans(n_clusters = 20, #numero de clusters
-init = 'k-means++', n_init = 20, #algoritmo que define a posição dos clusters de maneira mais assertiva
+kmeans = KMeans(n_clusters = 2, #numero de clusters
+init = 'k-means++', n_init = 100, #algoritmo que define a posição dos clusters de maneira mais assertiva
 max_iter = 300) #numero máximo de iterações
 pred_y = kmeans.fit_predict(X)
 plt.scatter(X[:,1], X[:,0], c = pred_y) #posicionamento dos eixos x e y
